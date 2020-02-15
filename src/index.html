@@ -1,0 +1,75 @@
+<script type="text/javascript">
+    RED.nodes.registerType('ctc-beam-search',{
+        category: 'Models',
+        color: '#F3B567',
+        defaults: {
+            beamWidth: {
+                value: 5,
+                validate:RED.validators.number(),
+                required: true,
+                type: 'number'
+            },
+            characters: {
+                value:' abcdefghijklmnopqrstuvwxyz\'',
+                required: true,
+                type: 'string'
+            },
+            name: {value:''}
+        },
+        inputs:1,
+        outputs:1,
+        icon: 'font-awesome/fa-search-plus',
+        label: function() {
+            return this.name||'CTCBeamSearch';
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="ctc-beam-search">
+    <div class="form-row">
+        <label for="node-input-beamWidth"><i class="fa fa-tag"></i>Beam Width</label>
+        <input type="text" id="node-input-beamWidth" placeholder="beamWidth">
+    </div>
+    <div class="form-row">
+        <label for="node-input-characters"><i class="fa fa-tag"></i>Characters</label>
+        <input type="text" id="node-input-characters" placeholder="characters">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i>Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="ctc-beam-search">
+    <p>This node takes log probabilities as input and perform the beam search with
+       the specified beam width. The blank character is the last one in the character
+       array. And all the beam search results are mapped from indexes to characters
+       and concatenated into strings.
+    </p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">number[][]</span>
+        </dt>
+        <dd>Log probabilities of each time slot. The second dimension matches the characters
+            length and first dimension is the number of time slots.
+        </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">string[]</span>
+        </dt>
+        <dd>The beam search result and its length equals to the specified beam width</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>The incoming <code>msg.payload</code> shall be number[][] of log probabilities. 
+       The first dimension is the number of time slots of CTC result. The second dimension
+       is each character's log probability. Then it is used to perform beam search with the
+       specified beam width. The beam search results would be string[]. It maps the
+       character indexes to characters and concatenate each result into a strings.
+    </p>
+</script>
